@@ -33,7 +33,7 @@ class AlunoService:
     
     async def buscar_por_id(self, aluno_id: str) -> Aluno:
 
-        aluno = await self.repository.obter_por_id(aluno_id)
+        aluno = await self.repository.buscar_por_id(aluno_id)
 
         if not aluno:
             raise ValueError("Aluno não encontrado.")

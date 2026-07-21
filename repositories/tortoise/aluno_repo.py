@@ -6,19 +6,18 @@ from infraestructure.tortoise.models import AlunoModel
 
 class AlunoRepositoryTortoise(AlunoRepository):
 
-    def criar(self, aluno: Aluno) -> Aluno:
-        aluno_model =AlunoModel(
-            id = aluno.id,
-            nome = aluno.nome,
-            email = aluno.email,
-            senha_hash = aluno.senha_hash,
-            data_nascimento = aluno.data_nascimento,
-            telefone = aluno.telefone,
-            ativo = aluno.ativo,
-            data_cadastro = aluno.data_cadastro
+    def criar(self, model: AlunoModel) -> Aluno:
+        return Aluno (
+            id = model.id,
+            nome = model.nome,
+            email = model.email,
+            senha_hash = model.senha_hash,
+            data_nascimento = model.data_nascimento,
+            telefone = model.telefone,
+            ativo = model.ativo, 
+            data_cadastro = model.data_cadastro,
+            
         )
-
-        return aluno_model
 
     async def salvar(self, aluno: Aluno) -> Aluno:
         model = await AlunoModel.create(
@@ -29,7 +28,7 @@ class AlunoRepositoryTortoise(AlunoRepository):
             data_nascimento = aluno.data_nascimento,
             telefone = aluno.telefone,
             ativo = aluno.ativo,
-            data_cadastro = aluno.data_cadastro
+            
         )
         return self.criar(model)
     
