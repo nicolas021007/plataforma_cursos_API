@@ -12,6 +12,17 @@ class CursoBase(BaseModel):
 
 
 
+class CursoCreate(CursoBase):
+    pass
+
+class CursoUpdate(BaseModel):
+    nome: Optional[str] = Field(None, min_legth =3 , max_length= 150)
+    descricao : Optional[str] = Field(None, min_length = 10, max_length = 1000)
+    carga_horaria: Optional[str] = Field(None, gt = 0)
+    professor: Optional[str] = None
+    ativo: Optional[bool] =None
+
+    
 class CursoResponse(CursoBase):
     id: UUID
     ativo: bool

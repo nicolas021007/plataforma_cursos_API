@@ -13,7 +13,7 @@ class Curso:
        carga_horaria: int, 
        professor: Optional[str] = None,
        ativo : bool =True,
-       data_criacao = Optional[datetime] = None,
+       data_criacao : Optional[datetime] = None,
     ):
        
         self._validar_nome(nome)
@@ -31,7 +31,7 @@ class Curso:
 
 
     def _validar_nome(self, nome : str) -> None:
-        if len(nome.strip()):
+        if len(nome.strip() < 3):
             raise ValueError("O nome do curso deve ter no mínimo 3 caracteres.")
         
     def _validar_descricao(self, descricao:str) -> None:
@@ -76,7 +76,7 @@ class Curso:
     
     def ativar(self) -> None:
         if self.ativo:
-            raise ValueError("Curso já está desativado.")
+            raise ValueError("Curso já está ativado.")
         self.ativo  = True
 
     def __repr__(self) -> str:
