@@ -21,7 +21,7 @@ class CursoService:
             id = uuid4(),
             nome = dados.nome,
             descricao= dados.descricao,
-            carga_horaria=dados.carga_horario,
+            carga_horaria=dados.carga_horaria,
             professor= dados.professor,
 
         )
@@ -55,7 +55,7 @@ class CursoService:
 
         if dados.ativo is not None:
             if dados.ativo:
-                curso.ativo()
+                curso.ativar()
 
             else:
                 curso.desativar()

@@ -31,12 +31,12 @@ class Curso:
 
 
     def _validar_nome(self, nome : str) -> None:
-        if len(nome.strip() < 3):
+        if len(nome.strip()) < 3:
             raise ValueError("O nome do curso deve ter no mínimo 3 caracteres.")
         
     def _validar_descricao(self, descricao:str) -> None:
-        if len(descricao.strip()):
-            raise ValueError("A descrição do curso deve ter no mínimo 10 caracteres.")
+        if len(descricao.strip()) >= 1000: 
+            raise ValueError("Você usou todas as caracteres que podia usar.")
         
 
     def _validar_carga_horaria(self, carga_horaria: int) -> None :

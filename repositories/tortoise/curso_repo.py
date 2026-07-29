@@ -18,20 +18,19 @@ class CursoRepositoryTortoise(CursoRepository):
             data_criacao = model.data_criacao,
         )
 
-    async def salvar(self,curso : Curso) -> Curso:
+
+    async def salvar(self, curso: Curso) -> Curso:
         model = await CursoModel.create(
             id = str(curso.id),
             nome = curso.nome,
             descricao = curso.descricao,
             carga_horaria = curso.carga_horaria,
             professor = curso.professor,
-            ativo = curso.ativo,
-            data_criacao = curso.carga_horaria,
-
+            ativo =curso.ativo,
         )
 
-        self.criar(model)
-
+        return self.criar(model)
+   
     async def buscar_por_id(self, curso_id: str) -> Optional[Curso]:
         curso_model = await CursoModel.get_or_none(id = curso_id)
         return self.criar(curso_model) if curso_model else None

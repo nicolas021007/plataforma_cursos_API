@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
 from infraestructure.tortoise.config import TORTOISE_ORM
 from api.routers.alunos import router as aluno_router
+from api.routers.cursos import router as curso_router
 
 
 app = FastAPI(
@@ -12,6 +13,9 @@ app = FastAPI(
 )
 
 app.include_router(aluno_router, prefix = "/alunos", tags =["Alunos"])
+app.include_router(curso_router, prefix="/cursos", tags = ["Cursos"])
+
+
 register_tortoise(
     app,
     config=TORTOISE_ORM,
