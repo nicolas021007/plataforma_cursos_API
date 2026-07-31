@@ -35,3 +35,18 @@ class CursoModel(Model):
 
     def __str__(self) -> str:
         return self.nome
+
+class MatriculaModel(Model):
+    id =  fields.CharField(pk = True, max_lenght = 36)
+    aluno_id = fields.CharField(max_lenght = 36)
+    curso_id = fields.CharField(max_lenght = 36)
+    ativo = fields.BooleanField(default = True)
+    data_matricula = fields.DatetimeField(auto_now_add = True)
+
+    class Meta:
+        table = "matriculas"
+        unique_together = ("aluno_id", "curso_id")
+
+
+    def __str__(self) -> str:
+        return f"<Matricula(aluno={self.aluno_id}, curso={self.curso_id})"
