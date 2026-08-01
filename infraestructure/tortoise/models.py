@@ -37,9 +37,9 @@ class CursoModel(Model):
         return self.nome
 
 class MatriculaModel(Model):
-    id =  fields.CharField(pk = True, max_lenght = 36)
-    aluno_id = fields.CharField(max_lenght = 36)
-    curso_id = fields.CharField(max_lenght = 36)
+    id =  fields.CharField(pk = True, max_length = 36)
+    aluno_id = fields.CharField(max_length= 36)
+    curso_id = fields.CharField(max_length= 36)
     ativo = fields.BooleanField(default = True)
     data_matricula = fields.DatetimeField(auto_now_add = True)
 

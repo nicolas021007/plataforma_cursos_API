@@ -11,7 +11,7 @@ class MatriculaRepositoryTortoise(MatriculaRepository):
             aluno_id = model.aluno_id,
             curso_id = model.curso_id,
             ativo = model.ativo,
-            data_matricula= model.data_natricula,
+            data_matricula= model.data_matricula,
         )
 
     async def salvar(self, matricula: Matricula) -> Matricula:
@@ -24,7 +24,7 @@ class MatriculaRepositoryTortoise(MatriculaRepository):
         )
         return self.criar(model)
 
-    async def bucar_por_id(self, matricula_id = str) -> Optional[Matricula]:
+    async def buscar_por_id(self, matricula_id = str) -> Optional[Matricula]:
         matricula_model = await MatriculaModel.get_or_none(id = matricula_id)
 
         return self.criar(matricula_model) if matricula_model else None
@@ -35,7 +35,7 @@ class MatriculaRepositoryTortoise(MatriculaRepository):
         return self.criar(matricula_model) if matricula_model else None
     
 
-    async def lista(self) -> List[Matricula]:
+    async def listar(self) -> List[Matricula]:
         models = await MatriculaModel.all()
         return [self.criar(m) for m in models]
 

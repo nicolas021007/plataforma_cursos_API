@@ -31,7 +31,7 @@ class MatriculaService:
         if not curso:
             raise ValueError("Curso não encotrado.")
 
-        matricula_existente = await self.repository.buscar_por_aluno_e_curso(str(dados.aluno_repository), str(dados.curso_id))
+        matricula_existente = await self.repository.buscar_por_aluno_e_curso(str(dados.aluno_id), str(dados.curso_id))
 
         if matricula_existente:
             raise ValueError("Aluno já está matriculado nesse curso.")
@@ -74,13 +74,13 @@ class MatriculaService:
         matricula = await self.buscar_por_id(matricula_id)
 
         if dados.ativo is not None:
-            if dados.ativos:
+            if dados.ativo:
                 matricula.reativar()
 
             else:
                 matricula.cancelar()
 
-
+        return await self.repository.atualizar(matricula)
 
     async def deletar(self, matricula_id: str) -> None:
 
