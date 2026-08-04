@@ -39,8 +39,8 @@ class Aluno:
 
             idade = (date.today() - data_nascimento).days // 365
 
-            if idade < 13:
-                raise ValueError("O Aluno deve ter no minímo 13 anos.")  
+            if idade < 18:
+                raise ValueError("O Aluno deve ter no minímo 18 anos.")  
         
     def atualizar_dados(self, nome: Optional[str] = None , telefone: Optional[str] = None)  -> None:
 

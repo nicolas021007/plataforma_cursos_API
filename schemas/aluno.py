@@ -21,7 +21,7 @@ class AlunoUpdate(BaseModel):
     telefone: Optional[str] = None
     ativo :Optional[bool] = None
 
-class AlunoResponse(BaseModel):
+class AlunoResponse(Alunobase):
 
     id: UUID
     ativo: bool

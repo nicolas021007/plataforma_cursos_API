@@ -40,6 +40,7 @@ async def listar_cursos(
     return await service.listar()
 
 
+
 @router.get("/{curso_id}", response_model = CursoResponse)
 
 async def buscar_curso(

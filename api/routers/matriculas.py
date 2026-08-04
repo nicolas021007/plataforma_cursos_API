@@ -5,7 +5,7 @@ from services.matricula_service import MatriculaService
 from repositories.tortoise.matricula_repo import MatriculaRepositoryTortoise
 from repositories.tortoise.aluno_repo import AlunoRepositoryTortoise
 from repositories.tortoise.curso_repo import CursoRepositoryTortoise
-from schemas.matricula import MatriculaCreate, MatriculaUpdate, MatriculaResponse
+from schemas.matricula import MatriculaCreate, MatriculaUpdate, MatriculaResponse,CursoComAlunos
 
 router = APIRouter()
 
@@ -62,17 +62,18 @@ async def listar_matriculas_por_aluno(
     return await service.listar_por_aluno(aluno_id)
 
 
-@router.get("/curso/{curso_id}", response_model = List[MatriculaResponse])
 
-async def listar_matriculas_por_curso(
+
+@router.get("/curso/{curso_id}", response_model = CursoComAlunos)
+async def curso_com_alunos(
     curso_id: str,
     service: MatriculaService = Depends(get_matricula_service)
 ):
 
-    return await service.listar_por_curso(curso_id)
-
-
-
+    try:
+        return await service.curso_com_alunos(curso_id)
+    except ValueError as erro:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = str(erro))
 
 
 @router.get("/{matricula_id}", response_model= MatriculaResponse)
