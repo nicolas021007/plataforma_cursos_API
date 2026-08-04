@@ -1,88 +1,157 @@
 # Plataforma de Cursos API
  
-API backend para gerenciamento de cursos e matrícula de alunos, desenvolvida em **Python** com **FastAPI**, seguindo os princípios de **Domain-Driven Design (DDD)**. O sistema permite cadastrar cursos e alunos, além de verificar e gerenciar as matrículas dos alunos nos cursos.
+API REST para gerenciamento de uma plataforma de cursos, desenvolvida em **FastAPI** seguindo os princípios de **Domain-Driven Design (DDD)**. Permite o cadastro de alunos, cursos e o controle de matrículas entre eles.
  
-## 🧱 Arquitetura
+## 📋 Sobre o projeto
  
-O projeto é organizado em camadas, separando responsabilidades de forma clara:
- 
-```
-plataforma_cursos_API/
-├── api/               # Camada de entrada da aplicação (rotas/endpoints)
-├── domain/            # Entidades e regras de negócio
-├── infraestructure/   # Configuração de banco de dados e integrações externas
-├── repositories/       # Acesso e persistência de dados
-├── schemas/            # Modelos de validação e serialização (Pydantic)
-├── services/            # Lógica de aplicação e orquestração das regras de negócio
-├── main.py              # Ponto de entrada da aplicação
-└── db.sqlite3            # Banco de dados local (SQLite)
-```
- 
-O fluxo de dependências segue: **schemas → domain → services → repositories → routers**, mantendo o domínio isolado de detalhes de infraestrutura.
+Este projeto foi desenvolvido como parte dos estudos em Análise e Desenvolvimento de Sistemas (ADS), com foco em aplicar uma arquitetura em camadas bem definida, separando regras de negócio, acesso a dados e exposição via API.
  
 ## 🚀 Tecnologias
  
-- **Python 3**
-- **FastAPI** — framework web para construção da API
-- **SQLite** — banco de dados relacional local
-- **Uvicorn** — servidor ASGI para rodar a aplicação
-## ⚙️ Instalação e execução
+- **[Python 3.12](https://www.python.org/)**
+- **[FastAPI](https://fastapi.tiangolo.com/)** — framework web para construção da API
+- **[Tortoise ORM](https://tortoise.github.io/)** — ORM assíncrono para Python
+- **[SQLite](https://www.sqlite.org/)** — banco de dados
+- **[Pydantic](https://docs.pydantic.dev/)** — validação de dados e schemas
+- **[Passlib](https://passlib.readthedocs.io/)** (bcrypt) — hash de senhas
+- **[Uvicorn](https://www.uvicorn.org/)** — servidor ASGI
+## 🏗️ Arquitetura
+ 
+O projeto segue os princípios de **DDD (Domain-Driven Design)**, organizado nas seguintes camadas:
+ 
+```
+plataforma_cursos_API/
+├── main.py                          # Ponto de entrada da aplicação
+├── api/
+│   └── routers/                     # Rotas HTTP (camada de apresentação)
+│       ├── alunos.py
+│       ├── cursos.py
+│       └── matriculas.py
+├── services/                        # Regras de aplicação e orquestração
+│   ├── aluno_service.py
+│   ├── curso_service.py
+│   └── matricula_service.py
+├── domain/                          # Entidades e regras de negócio puras
+│   ├── aluno.py
+│   ├── curso.py
+│   ├── matricula.py
+│   └── repositories/                # Contratos (interfaces abstratas)
+│       ├── aluno_repositories.py
+│       ├── curso_repositories.py
+│       └── matricula_repositories.py
+├── repositories/
+│   └── tortoise/                    # Implementação concreta dos repositórios
+│       ├── aluno_repo.py
+│       ├── curso_repo.py
+│       └── matricula_repo.py
+├── schemas/                         # Schemas Pydantic (validação de entrada/saída)
+│   ├── aluno.py
+│   ├── curso.py
+│   └── matricula.py
+└── infraestructure/
+    └── tortoise/
+        ├── config.py                # Configuração de conexão com o banco
+        └── models.py                # Models do Tortoise ORM
+```
+ 
+### Fluxo de uma requisição
+ 
+```
+Router → Service → Repository (interface) → Repository (Tortoise) → Model → Banco de dados
+```
+ 
+- **Router**: recebe a requisição HTTP, valida o schema de entrada e delega para a service.
+- **Service**: contém as regras de aplicação (validações de negócio, orquestração entre repositórios).
+- **Domain**: entidades puras, sem dependência de framework, com suas próprias regras de validação.
+- **Repository**: abstrai o acesso a dados; a interface fica no domínio, a implementação usa Tortoise ORM.
+- **Schemas**: definem o formato de entrada (`Create`/`Update`) e saída (`Response`) de cada recurso.
+## 📦 Recursos da API
+ 
+### Alunos (`/alunos`)
+ 
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/alunos/` | Cadastra um novo aluno |
+| `GET` | `/alunos/` | Lista todos os alunos |
+| `GET` | `/alunos/{id}` | Busca um aluno por ID |
+| `PUT` | `/alunos/{id}` | Atualiza dados de um aluno |
+| `DELETE` | `/alunos/{id}` | Remove um aluno |
+ 
+**Regras de negócio:**
+- E-mail deve ser único
+- Nome deve ter no mínimo 3 caracteres
+- Aluno deve ter no mínimo 18 anos
+- Senha é armazenada com hash (bcrypt), nunca em texto puro
+### Cursos (`/cursos`)
+ 
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/cursos/` | Cadastra um novo curso |
+| `GET` | `/cursos/` | Lista todos os cursos |
+| `GET` | `/cursos/{id}` | Busca um curso por ID |
+| `PUT` | `/cursos/{id}` | Atualiza dados de um curso |
+| `DELETE` | `/cursos/{id}` | Remove um curso |
+ 
+**Regras de negócio:**
+- Nome do curso deve ser único
+- Nome deve ter no mínimo 3 caracteres
+- Descrição deve ter no mínimo 10 caracteres
+- Carga horária deve ser maior que zero
+### Matrículas (`/matriculas`)
+ 
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/matriculas/` | Matricula um aluno em um curso |
+| `GET` | `/matriculas/` | Lista todas as matrículas |
+| `GET` | `/matriculas/aluno/{aluno_id}` | Lista os cursos de um aluno |
+| `GET` | `/matriculas/curso/{curso_id}` | Retorna o curso com a lista de alunos matriculados |
+| `GET` | `/matriculas/{id}` | Busca uma matrícula por ID |
+| `PUT` | `/matriculas/{id}` | Ativa ou cancela uma matrícula |
+| `DELETE` | `/matriculas/{id}` | Remove uma matrícula |
+ 
+**Regras de negócio:**
+- Aluno e curso precisam existir para criar a matrícula
+- Um aluno não pode se matricular duas vezes no mesmo curso
+- Respostas incluem o nome do aluno e do curso, não apenas os IDs
+## ⚙️ Como executar o projeto
  
 ### Pré-requisitos
  
-- Python 3.10+ instalado
-- Git
-### 1. Clone o repositório
+- Python 3.12+
+- pip
+### Passo a passo
  
+1. Clone o repositório:
 ```bash
 git clone https://github.com/nicolas021007/plataforma_cursos_API.git
 cd plataforma_cursos_API
 ```
  
-### 2. Crie e ative o ambiente virtual
- 
+2. Crie e ative um ambiente virtual:
 ```bash
 python3 -m venv venv
 source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 ```
  
-### 3. Instale as dependências
- 
+3. Instale as dependências:
 ```bash
-pip install -r requirements.txt
+pip install fastapi uvicorn tortoise-orm aiosqlite "passlib[bcrypt]" pydantic[email]
 ```
  
-> Caso o projeto ainda não tenha um `requirements.txt`, gere um com:
-> ```bash
-> pip freeze > requirements.txt
-> ```
- 
-### 4. Execute a aplicação
- 
+4. Execute a aplicação:
 ```bash
 uvicorn main:app --reload
 ```
  
-A API estará disponível em: `http://127.0.0.1:8000`
+5. Acesse a documentação interativa (Swagger):
+```
+http://127.0.0.1:8000/docs
+```
  
-Documentação interativa (Swagger):
-`http://127.0.0.1:8000/docs`
+O banco de dados SQLite (`db.sqlite3`) é criado automaticamente na primeira execução.
  
-## 📦 Funcionalidades
+## 📄 Licença
  
-- Cadastro e gerenciamento de cursos
-- Cadastro de alunos
-- Matrícula de alunos em cursos, com verificação de vínculo entre aluno e curso
-- Estrutura em camadas seguindo DDD
-- Persistência local com SQLite
-> Este projeto não implementa autenticação de usuários.
+Este projeto foi desenvolvido para fins de estudo no curso de Análise e Desenvolvimento de Sistemas.
  
-## 🗂 Status do projeto
- 
-Em desenvolvimento ativo.
- 
-## 👤 Autor
- 
-**Nicolas Rosa Santos**
-Estudante de Análise e Desenvolvimento de Sistemas (ADS) — Estácio
